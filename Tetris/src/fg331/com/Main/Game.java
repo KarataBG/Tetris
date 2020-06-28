@@ -1,46 +1,51 @@
 package fg331.com.Main;
 
 import fg331.com.Display.Display;
-import fg331.com.KeyManager.KeyManager;
-import fg331.com.State.*;
 import fg331.com.GFX.Assets;
-import fg331.com.State.*;
+import fg331.com.KeyManager.KeyManager;
 import fg331.com.State.Menu;
+import fg331.com.State.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.io.*;
+import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
 
-    public int MAP_WIDTH;
-    public int MAP_HEIGHT;
     public final int WIDTH = 48, HEIGHT = 48;
     public final int heightOffset = 0;
-
-
+    public final int heightOffsetButtons = 80;
+    public int MAP_WIDTH;
+    public int MAP_HEIGHT;
     public Display display;
     public KeyManager keyManager;
     public Thread thread;
 
     public Menu menu;
-    public Scores scores;
+    public Scores score;
     public GameState gameState;
     public Settings settings;
+    public End end;
+    public HighScore highScore;
 
     public int[][] map;
+    public ArrayList<Integer> scores = new ArrayList<>();
 
     public Block currentBlock;
     public int leftOffset;
 
     public int pointCounter = 0;
+    public int difficulty;
+    public int maxDifficulty = 3;
 
     public Graphics g;
     public Font drawFont = new Font("Arial", Font.BOLD, 45); // fon za pisaneto na ostawa6ti bombo i pri pe4elene
     public boolean running = false;
     public boolean clearSpawn = true;
 
+    public String highScoreGameState;
     public String title;
     public int width, height;
     //    public int rand = (int) (Math.random() * 7) + 1, rand1;  // rand na side, rand1 =/= rand, na draw, sled towa rand = rand1 i now rand1
@@ -65,18 +70,22 @@ public class Game extends JPanel implements Runnable {
 
         map = new int[MAP_WIDTH][MAP_HEIGHT];
         keyManager = new KeyManager();
+
+        scoreboardCheck();
     }
 
     private void init() {
         Assets.init();
         display = new Display(title, width, height);
         display.getFrame().addKeyListener(keyManager);
-        initSpawn();
+//        initSpawn();
 
         gameState = new GameState(this);
         menu = new Menu(this);
-        scores = new Scores(this);
+        score = new Scores(this);
         settings = new Settings(this);
+        end = new End(this);
+        highScore = new HighScore(this);
 
         Runtime.getRuntime().addShutdownHook(new Hook(this));
 
@@ -105,8 +114,9 @@ public class Game extends JPanel implements Runnable {
     }
 
     private void tick() {
-        if (State.getCurrentState() != null)
+        if (State.getCurrentState() != null && !keyManager.space) {
             State.getCurrentState().tick();
+        }
     }
 
     private void spawnChecker() {
@@ -132,10 +142,11 @@ public class Game extends JPanel implements Runnable {
             case 7:
                 if (map[4][0] != 0 || map[5][0] != 0 || map[5][1] != 0 || map[6][1] != 0) exiter();
                 break;
-        }
+        } // TODO мръсно
     }
 
     public void exiter() {
+        //TODO взима трудността и чете съответния ред от файла
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
@@ -144,35 +155,133 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
         String line = null;
+        String pastScore = null;
         StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder1 = new StringBuilder();
 
         try {
-            if ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
+            int lineNum = 0;
+            while ((line = reader.readLine()) != null) {
+                if (lineNum < difficulty)
+                    stringBuilder.append(line).append("\n");
+                else if (lineNum == difficulty) {
+                    if (difficulty != 0)
+                        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                    pastScore = line;
+                } else if (difficulty != maxDifficulty)
+                    stringBuilder1.append(line).append("\n");
+
+                lineNum++;
             }
+            if (difficulty != maxDifficulty) {
+                stringBuilder1.deleteCharAt(stringBuilder1.length() - 1);
+            }
+
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (stringBuilder.toString().equals("")) {
-            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+//        pointCounter = 19999;
+
+        //не е това изчезващия проблем
+        try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) { //TODO силни проверки за кога трябва и кога не трябва да има нов ред при принтене
+            //ако резултата се принти в средата трябва да има нов ред
+            //ако след резултата има текст то той трябва да е без последен нов ред, но без нищо в края
 //            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-                out.print(String.valueOf(pointCounter));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            if (difficulty != 0)
+                out.println(stringBuilder); //TODO тук е проблема
+            if (pastScore.equals("") || pointCounter > Integer.parseInt(pastScore)) {
+                if (difficulty != maxDifficulty)
+                    out.println(pointCounter);
+                else
+                    out.print(pointCounter);
+            } else if (difficulty != maxDifficulty) {
+                out.println(pastScore);
+            } else {
+                out.print(pastScore);
             }
-        } else if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
-            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
-//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-                out.print(String.valueOf(pointCounter));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            out.print(stringBuilder1);
+
+            out.flush();
+            out.close();
+//        } else if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
+//            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+////            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+//                out.print(String.valueOf(pointCounter));
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        System.exit(1);
+
+        gameState.mouseRemover();
+        end.mouseSetter();
+        State.setCurrentState(end);
     }
 
-    public void loadHighScore() {
+    private void scoreboardCheck() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
+//            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        int count = 0;
+
+        try {
+            while (reader.readLine() != null) {
+                count++;
+            }
+            reader.close();
+
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        }
+
+        count = 4 - count;
+
+        if (count != 0) { // TODO решението е че само отварянето с стрийма премахва всичко във файла
+            StringBuilder stringBuilder = new StringBuilder();
+            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt", true))) {
+//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+                for (int i = 0; i < count; i++) {
+                    System.out.println(i);
+                    stringBuilder.append("0");
+                    stringBuilder.append("\n");
+                }
+
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                if (count != 4)
+                    out.println();
+                out.print(stringBuilder.toString());
+
+                out.flush();
+                out.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        try {
+            // взимане на резултата //
+            reader.close();
+
+            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
+            //            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                scores.add(Integer.parseInt(line));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadHighScore() { //TODO да хване трудност параметъра трябва
         BufferedReader reader = null;
         try {
 //            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
@@ -191,23 +300,25 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
-        if (stringBuilder.toString().equals("")) {
-//            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
-            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-                out.print(String.valueOf(pointCounter));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (stringBuilder.toString().equals("")) {
+////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+//                out.print(String.valueOf(pointCounter));
+//                out.close();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-        if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
-//            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
-            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-                out.print(String.valueOf(pointCounter));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
+////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+//                out.print(String.valueOf(pointCounter));
+//                out.close();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     void switching() {
@@ -230,25 +341,42 @@ public class Game extends JPanel implements Runnable {
         blockReeper++;
     }
 
+    public void getHighScore() {
+        try {
+//            BufferedReader reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
+            for (int i = 0; i < difficulty; i++) {
+                reader.readLine();
+            }
+            highScoreGameState = reader.readLine();
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         init();
         int fps = 20;
+        int d = 0;
 
         while (running) {
-                render();
-                tick();
+            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
+            tick();
 
             try {
-                Thread.sleep(1000/fps);
+                Thread.sleep(1000 / fps);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
         stop();
     }
 
-    KeyManager getKeyManager() {
+    public KeyManager getKeyManager() {
         return keyManager;
     }
 

@@ -96,10 +96,9 @@ public class Block {
     }
 
     public void draw(Graphics g) {
-        g.drawImage(image, (current[0].x * WIDTH) + game.leftOffset, current[0].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
-        g.drawImage(image, (current[1].x * WIDTH) + game.leftOffset, current[1].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
-        g.drawImage(image, (current[2].x * WIDTH) + game.leftOffset, current[2].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
-        g.drawImage(image, (current[3].x * WIDTH) + game.leftOffset, current[3].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
+        for (int i = 0; i < 4; i++) {
+            g.drawImage(image, (current[i].x * WIDTH) + game.leftOffset, current[i].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
+        }
     }
 
     public void autoMove() {
@@ -315,8 +314,8 @@ public class Block {
         g.drawString(String.valueOf(pointCounter), game.WIDTH, game.HEIGHT * 6);
         g.drawString("High", game.WIDTH, game.HEIGHT * 8);
         g.drawString("Score:", game.WIDTH, game.HEIGHT * 9);
-        if (game.gameState.highScore != null)
-            g.drawString(game.gameState.highScore, game.WIDTH, game.HEIGHT * 10);
+        if (game.highScoreGameState != null)
+            g.drawString(game.highScoreGameState, game.WIDTH, game.HEIGHT * 10);
         else
             g.drawString("0", game.WIDTH, game.HEIGHT * 10);
     }

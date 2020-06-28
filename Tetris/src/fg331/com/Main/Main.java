@@ -14,6 +14,10 @@ public class Main {
 
         Game game = new Game("Tetris");
         game.start();
+        //TODO скед загуба да има друг екран(стадии) на който да има неща !>
+        //TODO да има high score за отделните трудности, кур, и стадий за него
+        //TODO да има паузиране
+        //TODO открий какъв е този клас Scores и го оправи
     }
 
     //TODO oprawi wartene nalqwo

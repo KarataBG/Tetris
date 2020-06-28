@@ -7,64 +7,52 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Menu extends State {
+    private final int width = 180, height = 60;
+    private final int startX, startY, heightOffset;
+    private final String[] presetNames = {"Easy Preset", "Inter Preset", "Hard Preset", "Insane Preset", "Custom Speed", "HighScore"};
     Game game;
-
-    public Menu(Game game) {
-        this.game = game;
-
-        begButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        begButtonY = game.MAP_HEIGHT * game.WIDTH / 12;
-
-        intButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        intButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + height + 20;
-
-        harButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        harButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + (height + 20) * 2;
-
-        insButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        insButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + (height + 20) * 3;
-
-        seButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        seButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + (height + 20) * 4;
-    }
-
-    private int scButtonX, scButtonY;
-    private int begButtonX, begButtonY;
-    private int intButtonX, intButtonY;
-    private int harButtonX, harButtonY;
-    private int insButtonX, insButtonY;
-    private int seButtonX, seButtonY;
-    private int width = 180, height = 60;
-
-    private MouseListener mouseListener = new MouseListener() {
+    private final MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getX() > seButtonX && e.getX() < seButtonX + width * 2 && e.getY() > seButtonY && e.getY() < seButtonY + height) {
-                mouseRemover();
-                game.settings.mouseSetter();
-                setCurrentState(game.settings);
-            } else if (e.getX() > begButtonX && e.getX() < begButtonX + width * 2 && e.getY() > begButtonY && e.getY() < begButtonY + height) {
-                game.speed = 20;
-                updater();
-            } else if (e.getX() > intButtonX && e.getX() < intButtonX + width * 2 && e.getY() > intButtonY && e.getY() < intButtonY + height) {
-                game.speed = 14;
-                updater();
-            } else if (e.getX() > harButtonX && e.getX() < harButtonX + width * 2 && e.getY() > harButtonY && e.getY() < harButtonY + height) {
-                game.speed = 8;
-                updater();
-            } else if (e.getX() > insButtonX && e.getX() < insButtonX + width * 2 && e.getY() > insButtonY && e.getY() < insButtonY + height) {
-                game.speed = 5;
-                updater();
-            }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
+            if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY && e.getY() < startY + height) {
+                game.speed = 20;
+                game.autoMove = 0;
+                game.difficulty = 0;
+                updater();
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset && e.getY() < startY + heightOffset + height) {
+                game.speed = 14;
+                game.autoMove = 0;
+                game.difficulty = 1;
+                updater();
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 2 && e.getY() < startY + heightOffset * 2 + height) {
+                game.speed = 8;
+                game.autoMove = 0;
+                game.difficulty = 2;
+                updater();
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 3 && e.getY() < startY + heightOffset * 3 + height) {
+                game.speed = 5;
+                game.autoMove = 0;
+                game.difficulty = 3;
+                updater();
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 4 && e.getY() < startY + heightOffset * 4 + height) { //custom speed
+                mouseRemover();
+                game.settings.mouseSetter();
+                setCurrentState(game.settings);
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 5 && e.getY() < startY + heightOffset * 5 + height) { //custom speed
+                mouseRemover();
+                game.highScore.mouseSetter();
+                setCurrentState(game.highScore);
+            }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
         }
+
 
         @Override
         public void mouseEntered(MouseEvent e) {
@@ -75,6 +63,15 @@ public class Menu extends State {
         }
     };
 
+    public Menu(Game game) {
+        this.game = game;
+
+        startX = game.MAP_WIDTH * game.WIDTH / 8;
+        startY = game.MAP_HEIGHT * game.WIDTH / 12;
+
+        heightOffset = game.heightOffsetButtons;
+    }
+
     @Override
     public void tick() {
 
@@ -82,22 +79,14 @@ public class Menu extends State {
 
     @Override
     public void render(Graphics g) {
-        g.setColor(Color.GRAY);
-
-        g.fillRect(begButtonX, begButtonY, width * 2, height);
-        g.fillRect(intButtonX, intButtonY, width * 2, height);
-        g.fillRect(harButtonX, harButtonY, width * 2, height);
-        g.fillRect(insButtonX, insButtonY, width * 2, height);
-        g.fillRect(seButtonX, seButtonY, width * 2, height);
-
-        g.setColor(Color.BLACK);
         g.setFont(game.drawFont);
 
-        g.drawString("Easy Preset", begButtonX + width / 8, begButtonY + height * 2 / 3);
-        g.drawString("Inter Preset", intButtonX + width / 8, intButtonY + height * 2 / 3);
-        g.drawString("Hard Preset", harButtonX + width / 8, harButtonY + height * 2 / 3);
-        g.drawString("Insane Preset", insButtonX + width / 8, insButtonY + height * 2 / 3);
-        g.drawString("Custom Speed", seButtonX + width / 8, seButtonY + height * 2 / 3);
+        for (int i = 0; i < presetNames.length; i++) {
+            g.setColor(Color.GRAY);
+            g.fillRect(startX, startY + heightOffset * i, width * 2, height);
+            g.setColor(Color.BLACK);
+            g.drawString(presetNames[i], startX + width / 8, startY + height * 2 / 3 + heightOffset * i);
+        }
     }
 
     private void updater() {
@@ -106,10 +95,13 @@ public class Menu extends State {
         game.initSpawn();
         game.pointCounter = 0;
         game.loadHighScore();
+        game.getHighScore();
+        game.getKeyManager().space = false;
 
         mouseRemover();
+
         game.gameState.mouseSetter();
-        setCurrentState(game.gameState);
+        setCurrentState(game.gameState); //TODO смяната на стадии задържа mouseEvent (натиска да влезе в игра когато отпусне над меню бутона се връща в менюто
     }
 
     public void mouseSetter() {
