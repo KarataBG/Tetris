@@ -7,8 +7,9 @@ import java.awt.event.KeyListener;
 
 public class KeyManager implements KeyListener, ActionListener {
 
-    private boolean[] keys;
     public boolean up, down, left, right, rotation0, rotation1;
+    public boolean space;
+    private boolean[] keys;
 
     public KeyManager() {
         keys = new boolean[256];
@@ -37,6 +38,10 @@ public class KeyManager implements KeyListener, ActionListener {
                 break;
 
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_SPACE){
+            space = !space;
+        }
     }
 
     @Override
@@ -61,6 +66,7 @@ public class KeyManager implements KeyListener, ActionListener {
 //                rotation1 = false;
 //                break;
         }*/
+
     }
 
 

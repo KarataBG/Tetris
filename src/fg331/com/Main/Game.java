@@ -45,6 +45,7 @@ public class Game extends JPanel implements Runnable {
     public boolean running = false;
     public boolean clearSpawn = true;
 
+    public String highScoreGameState;
     public String title;
     public int width, height;
     //    public int rand = (int) (Math.random() * 7) + 1, rand1;  // rand na side, rand1 =/= rand, na draw, sled towa rand = rand1 i now rand1
@@ -113,8 +114,9 @@ public class Game extends JPanel implements Runnable {
     }
 
     private void tick() {
-        if (State.getCurrentState() != null)
+        if (State.getCurrentState() != null && !keyManager.space) {
             State.getCurrentState().tick();
+        }
     }
 
     private void spawnChecker() {
@@ -163,7 +165,8 @@ public class Game extends JPanel implements Runnable {
                 if (lineNum < difficulty)
                     stringBuilder.append(line).append("\n");
                 else if (lineNum == difficulty) {
-                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                    if (difficulty != 0)
+                        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                     pastScore = line;
                 } else if (difficulty != maxDifficulty)
                     stringBuilder1.append(line).append("\n");
@@ -179,7 +182,6 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
-
 //        pointCounter = 19999;
 
         //не е това изчезващия проблем
@@ -187,7 +189,8 @@ public class Game extends JPanel implements Runnable {
             //ако резултата се принти в средата трябва да има нов ред
             //ако след резултата има текст то той трябва да е без последен нов ред, но без нищо в края
 //            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-            out.println(stringBuilder); //TODO тук е проблема
+            if (difficulty != 0)
+                out.println(stringBuilder); //TODO тук е проблема
             if (pastScore.equals("") || pointCounter > Integer.parseInt(pastScore)) {
                 if (difficulty != maxDifficulty)
                     out.println(pointCounter);
@@ -213,9 +216,6 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
-
-//        System.exit(1);
-
         gameState.mouseRemover();
         end.mouseSetter();
         State.setCurrentState(end);
@@ -231,18 +231,6 @@ public class Game extends JPanel implements Runnable {
         }
 
         int count = 0;
-
-//        for (int i = 0; i < 4; i++) {
-//            try {
-//                if (!reader.readLine().isEmpty()) {
-//                }
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (NullPointerException e) {
-//                count++;
-//            }
-//        }
 
         try {
             while (reader.readLine() != null) {
@@ -279,18 +267,15 @@ public class Game extends JPanel implements Runnable {
         }
 
         try {
-            // взимане на резултата //TODO
-
+            // взимане на резултата //
             reader.close();
 
             reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
             //            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
-
             String line;
             while ((line = reader.readLine()) != null) {
                 scores.add(Integer.parseInt(line));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -356,13 +341,29 @@ public class Game extends JPanel implements Runnable {
         blockReeper++;
     }
 
+    public void getHighScore() {
+        try {
+//            BufferedReader reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
+            for (int i = 0; i < difficulty; i++) {
+                reader.readLine();
+            }
+            highScoreGameState = reader.readLine();
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         init();
         int fps = 20;
+        int d = 0;
 
         while (running) {
-            render();
+            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
             tick();
 
             try {
@@ -370,11 +371,12 @@ public class Game extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
         stop();
     }
 
-    KeyManager getKeyManager() {
+    public KeyManager getKeyManager() {
         return keyManager;
     }
 

@@ -1,41 +1,25 @@
 package fg331.com.State;
 
-import fg331.com.Main.Game;
 import fg331.com.GFX.Assets;
+import fg331.com.Main.Game;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class GameState extends State {
-    Game game;
-
     public int height = 100, width = 160;
-    private String[] rows;
-    private Font font;
     public String highScore;
     public int meButtonX, meButtonY, meWidth, meHeight;
-
-    public GameState(Game game) {
-        this.game = game;
-        font = new Font("Arial", Font.BOLD, 52);
-        meButtonX = game.WIDTH;
-        meButtonY = game.HEIGHT * 3;
-        try {
-            highScore = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt")).readLine();
-//            highScore = new BufferedReader(new FileReader("res/txt/HighScores.txt")).readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    Game game;
     private final MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getX() > meButtonX - game.WIDTH / 2 && e.getX() < meButtonX + game.WIDTH * 3 && e.getY() > meButtonY - game.HEIGHT && e.getY() < meButtonY) {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (e.getX() > meButtonX - game.WIDTH / 2 * 1.45 && e.getX() < meButtonX + game.WIDTH * 3 * 1.15 && e.getY() > meButtonY - game.HEIGHT *1.45 && e.getY() < meButtonY*1.15) {
                 mouseRemover();
                 game.menu.mouseSetter();
                 setCurrentState(game.menu);
@@ -43,20 +27,30 @@ public class GameState extends State {
         }
 
         @Override
-        public void mousePressed(MouseEvent e) { }
+        public void mouseReleased(MouseEvent e) {
+        }
 
         @Override
-        public void mouseReleased(MouseEvent e) { }
+        public void mouseEntered(MouseEvent e) {
+        }
 
         @Override
-        public void mouseEntered(MouseEvent e) { }
-
-        @Override
-        public void mouseExited(MouseEvent e) { }
+        public void mouseExited(MouseEvent e) {
+        }
     };
+    private String[] rows;
+    private Font font;
+    private boolean running = true;
 
+    public GameState(Game game) {
+        this.game = game;
+        font = new Font("Arial", Font.BOLD, 52);
+        meButtonX = game.WIDTH;
+        meButtonY = game.HEIGHT * 3;
+    }
     @Override
     public void tick() {
+
         game.autoMove++;
         // TODO wednav natisnato ima 4akane za wreme; press w rotationLeft = 0 ina4e rotationLeft winagi e 6;
 
@@ -72,7 +66,7 @@ public class GameState extends State {
 
         game.currentBlock.move();
 
-        if (game.autoMove == game.speed) {
+        if (game.autoMove == game.speed) { //TODO скоростта се шльопа
             game.currentBlock.autoMove();
             game.autoMove = 0;
         }

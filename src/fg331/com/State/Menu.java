@@ -14,28 +14,35 @@ public class Menu extends State {
     private final MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
+        }
 
+        @Override
+        public void mousePressed(MouseEvent e) {
             if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY && e.getY() < startY + height) {
                 game.speed = 20;
+                game.autoMove = 0;
                 game.difficulty = 0;
                 updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset && e.getY() < startY + heightOffset + height) {
                 game.speed = 14;
+                game.autoMove = 0;
                 game.difficulty = 1;
                 updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 2 && e.getY() < startY + heightOffset * 2 + height) {
                 game.speed = 8;
+                game.autoMove = 0;
                 game.difficulty = 2;
                 updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 3 && e.getY() < startY + heightOffset * 3 + height) {
                 game.speed = 5;
+                game.autoMove = 0;
                 game.difficulty = 3;
                 updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 4 && e.getY() < startY + heightOffset * 4 + height) { //custom speed
                 mouseRemover();
                 game.settings.mouseSetter();
                 setCurrentState(game.settings);
-            }else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 5 && e.getY() < startY + heightOffset * 5 + height) { //custom speed
+            } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 5 && e.getY() < startY + heightOffset * 5 + height) { //custom speed
                 mouseRemover();
                 game.highScore.mouseSetter();
                 setCurrentState(game.highScore);
@@ -43,12 +50,9 @@ public class Menu extends State {
         }
 
         @Override
-        public void mousePressed(MouseEvent e) {
-        }
-
-        @Override
         public void mouseReleased(MouseEvent e) {
         }
+
 
         @Override
         public void mouseEntered(MouseEvent e) {
@@ -91,10 +95,13 @@ public class Menu extends State {
         game.initSpawn();
         game.pointCounter = 0;
         game.loadHighScore();
+        game.getHighScore();
+        game.getKeyManager().space = false;
 
         mouseRemover();
+
         game.gameState.mouseSetter();
-        setCurrentState(game.gameState);
+        setCurrentState(game.gameState); //TODO смяната на стадии задържа mouseEvent (натиска да влезе в игра когато отпусне над меню бутона се връща в менюто
     }
 
     public void mouseSetter() {

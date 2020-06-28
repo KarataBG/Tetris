@@ -314,8 +314,8 @@ public class Block {
         g.drawString(String.valueOf(pointCounter), game.WIDTH, game.HEIGHT * 6);
         g.drawString("High", game.WIDTH, game.HEIGHT * 8);
         g.drawString("Score:", game.WIDTH, game.HEIGHT * 9);
-        if (game.gameState.highScore != null)
-            g.drawString(game.gameState.highScore, game.WIDTH, game.HEIGHT * 10);
+        if (game.highScoreGameState != null)
+            g.drawString(game.highScoreGameState, game.WIDTH, game.HEIGHT * 10);
         else
             g.drawString("0", game.WIDTH, game.HEIGHT * 10);
     }

@@ -111,12 +111,12 @@ public class Settings extends State {
 
     public void mouseSetter() {
         game.display.getCanvas().addMouseListener(mouseListener);
-        game.display.getCanvas().addKeyListener(keyListener);
+//        game.display.getCanvas().addKeyListener(keyListener);
     }
 
     public void mouseRemover() {
         game.display.getCanvas().removeMouseListener(mouseListener);
-        game.display.getCanvas().removeKeyListener(keyListener);
+//        game.display.getCanvas().removeKeyListener(keyListener);
     }
 
     public void setSwitcher(int switcher) {
