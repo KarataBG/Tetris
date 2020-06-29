@@ -2,7 +2,7 @@ package fg331.com.Main;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         //Main frame - partial/filling
         //size block - 30px
@@ -18,6 +18,10 @@ public class Main {
         //TODO да има high score за отделните трудности, кур, и стадий за него
         //TODO да има паузиране
         //TODO открий какъв е този клас Scores и го оправи
+        //TODO вкарай gridLines
+        //TODO сложи рисуването на втора нишка и викай само при нужда
+        // може би не е нужна друга нишка
+        //TODO да идват от извън игралното поле да има два нови реда които няма да се рисуват
     }
 
     //TODO oprawi wartene nalqwo

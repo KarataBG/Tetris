@@ -42,22 +42,20 @@ public class Menu extends State {
                 mouseRemover();
                 game.settings.mouseSetter();
                 setCurrentState(game.settings);
+                game.render();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 5 && e.getY() < startY + heightOffset * 5 + height) { //custom speed
                 mouseRemover();
                 game.highScore.mouseSetter();
                 setCurrentState(game.highScore);
+                game.render();
             }
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
         }
-
-
         @Override
         public void mouseEntered(MouseEvent e) {
         }
-
         @Override
         public void mouseExited(MouseEvent e) {
         }
@@ -102,6 +100,7 @@ public class Menu extends State {
 
         game.gameState.mouseSetter();
         setCurrentState(game.gameState); //TODO смяната на стадии задържа mouseEvent (натиска да влезе в игра когато отпусне над меню бутона се връща в менюто
+        game.render();
     }
 
     public void mouseSetter() {

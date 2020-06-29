@@ -91,9 +91,13 @@ public class Game extends JPanel implements Runnable {
 
         menu.mouseSetter();
         State.setCurrentState(menu);
+
+        for (int i = 0; i < 5/*6*/; i++) {
+            render();
+        }
     }
 
-    private void render() {
+    public void render() {
         BufferStrategy bs = display.getCanvas().getBufferStrategy();
         if (bs == null) {
             display.getCanvas().createBufferStrategy(3);
@@ -360,7 +364,6 @@ public class Game extends JPanel implements Runnable {
     public void run() {
         init();
         int fps = 20;
-        int d = 0;
 
         while (running) {
             render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо

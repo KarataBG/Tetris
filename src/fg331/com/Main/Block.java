@@ -1,15 +1,14 @@
 package fg331.com.Main;
 
-import fg331.com.KeyManager.KeyManager;
 import fg331.com.GFX.Assets;
+import fg331.com.KeyManager.KeyManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Block {
-    private Font drawFont = new Font("Arial", Font.BOLD, 60);
-
     private final int WIDTH = 48, HEIGHT = 48;
+    private Font drawFont = new Font("Arial", Font.BOLD, 60);
     //    private int leftOffset = 432;
     private boolean canMoveDown = true;
 
@@ -145,8 +144,7 @@ public class Block {
                 }
             }
             keyManager.down = false;
-        }
-        if (keyManager.left) {
+        } else if (keyManager.left) {
 
             boolean canMoveLeft = true;
             for (Point point : current) {
@@ -159,43 +157,39 @@ public class Block {
                     break;
                 }
             }
+
             if (canMoveLeft) {
                 for (Point point : current) {
                     point.x--;
                 }
             }
             keyManager.left = false;
-        }
+        } else if (keyManager.right) {
 
-        if (keyManager.right) {
             boolean canMoveRight = true;
             for (Point point : current) {
                 if (!(point.x < game.MAP_WIDTH - 1)) {
-                    keyManager.right = false;
-                    return;
+                    canMoveRight = false;
+                    break;
+                } else if (game.map[point.x + 1][point.y] != 0) {
+                    canMoveRight = false;
+                    break;
                 }
-
-                if (point.x > game.MAP_WIDTH - 1 || point.y < 0) {
-                    keyManager.right = false;
-                    return;
-                }
-
-                if (point.y > 0)
-                    if (game.map[point.x + 1][point.y] != 0) {
-                        keyManager.right = false;
-                        return;
-                    }
             }
 
-            for (Point point : current) {
-                point.x++;
+            if (canMoveRight) {
+                for (Point point : current) {
+                    point.x++;
+                }
             }
+
+            keyManager.right = false;
         }
-        keyManager.right = false;
+
+        game.render();
     }
 
     public void rotationLeft() {
-
         if (shape != 6) {
             if (keyManager.rotation0) {
                 for (int i = 0; i < 4; i++) {

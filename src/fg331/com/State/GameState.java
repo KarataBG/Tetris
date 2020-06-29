@@ -16,7 +16,6 @@ public class GameState extends State {
         @Override
         public void mouseClicked(MouseEvent e) {
         }
-
         @Override
         public void mousePressed(MouseEvent e) {
             if (e.getX() > meButtonX - game.WIDTH / 2 * 1.45 && e.getX() < meButtonX + game.WIDTH * 3 * 1.15 && e.getY() > meButtonY - game.HEIGHT *1.45 && e.getY() < meButtonY*1.15) {
@@ -25,15 +24,12 @@ public class GameState extends State {
                 setCurrentState(game.menu);
             }
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
         }
-
         @Override
         public void mouseEntered(MouseEvent e) {
         }
-
         @Override
         public void mouseExited(MouseEvent e) {
         }
@@ -67,6 +63,7 @@ public class GameState extends State {
         game.currentBlock.move();
 
         if (game.autoMove == game.speed) { //TODO скоростта се шльопа
+            game.render();
             game.currentBlock.autoMove();
             game.autoMove = 0;
         }
