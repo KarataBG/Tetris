@@ -96,7 +96,8 @@ public class Block {
 
     public void draw(Graphics g) {
         for (int i = 0; i < 4; i++) {
-            g.drawImage(image, (current[i].x * WIDTH) + game.leftOffset, current[i].y * HEIGHT + game.heightOffset, WIDTH, HEIGHT, null);
+            if (current[i].y >= 0)
+                g.drawImage(image, (current[i].x * WIDTH) + game.leftOffset, current[i].y * HEIGHT + game.heightOffset + game.topOffset, WIDTH, HEIGHT, null);
         }
     }
 
@@ -118,6 +119,10 @@ public class Block {
                 point.y++;
             }
         } else {
+            for (Point p : current){
+                if (p.y <= 0)
+                    game.exiter();
+            }
             game.switching();
         }
 
@@ -131,10 +136,12 @@ public class Block {
                     if (point.y >= (game.MAP_HEIGHT - 1)) {
                         canMoveDown = false;
                         break;
-                    } else if (point.y >= 0) if (game.map[point.x][point.y + 1] != 0) {
-                        canMoveDown = false;
-                        break;
                     }
+                    if (point.y >= 0)
+                        if (game.map[point.x][point.y + 1] != 0) {
+                            canMoveDown = false;
+                            break;
+                        }
                 }
                 if (canMoveDown) {
                     for (Point point : current) {
@@ -173,10 +180,12 @@ public class Block {
                 if (!(point.x < game.MAP_WIDTH - 1)) {
                     canMoveRight = false;
                     break;
-                } else if (point.y >= 0) if (game.map[point.x + 1][point.y] != 0) {
-                    canMoveRight = false;
-                    break;
                 }
+                if (point.y >= 0)
+                    if (game.map[point.x + 1][point.y] != 0) {
+                        canMoveRight = false;
+                        break;
+                    }
             }
 
             if (canMoveRight) {
@@ -221,6 +230,7 @@ public class Block {
                         current[i].y = tempY + current[1].y;
                     }
                 }
+                game.render();
             }
         }
     }
@@ -256,6 +266,7 @@ public class Block {
                         current[i].y = tempY + current[1].y;
                     }
                 }
+                game.render();
             }
         }
     }
@@ -295,15 +306,15 @@ public class Block {
         }
     }
 
-    public void sideDisplay(Graphics g, int rand,int rand1,int rand2, int pointCounter) { //TODO да се вика само при ъпдейт
+    public void sideDisplay(Graphics g, int rand, int rand1, int rand2, int pointCounter) { //TODO да се вика само при ъпдейт
         images[0] = Assets.numImage.get(rand);
         images[1] = Assets.numImage.get(rand1);
         images[2] = Assets.numImage.get(rand2);
 //        int multx = Assets.numX.get(rand);
 //        int multy = Assets.numY.get(rand); //от 0 до където почва сивото и от 0 до 2 * височината + y
 
-        int[] multx = {Assets.numX.get(rand),Assets.numX.get(rand1),Assets.numX.get(rand2)};
-        int[] multy = {Assets.numY.get(rand),Assets.numY.get(rand1),Assets.numY.get(rand2)};
+        int[] multx = {Assets.numX.get(rand), Assets.numX.get(rand1), Assets.numX.get(rand2)};
+        int[] multy = {Assets.numY.get(rand), Assets.numY.get(rand1), Assets.numY.get(rand2)};
 
         g.setColor(Color.BLACK);
         g.setFont(drawFont);
@@ -330,8 +341,8 @@ public class Block {
 
         int singularWidth = game.leftOffset / 4; //TODO нови координати че да изглежда на място
         for (int i = 6; i < 9; i++) {
-            y += singularWidth*2;
-            g.drawImage(images[i-6], 0, y, singularWidth * multx[i-6], singularWidth * multy[i-6], null);
+            y += singularWidth * 2;
+            g.drawImage(images[i - 6], 0, y, singularWidth * multx[i - 6], singularWidth * multy[i - 6], null);
         }
     }
 

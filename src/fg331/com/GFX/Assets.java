@@ -16,6 +16,7 @@ public class Assets {
     public static Map<Integer,BufferedImage> numImage = new HashMap<>();
     public static Map<Integer,Integer> numX = new HashMap<>();
     public static Map<Integer,Integer> numY = new HashMap<>();
+    public static BufferedImage gridLine = null;
 
     public static String path = null;
 
@@ -29,6 +30,8 @@ public class Assets {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        gridLine = Image.imageLoader("/images/TetrisGridLines.png");
 
         colors.put("red",           sheet.crop(0, 0, width, height));
         colorNames.put("red",       1);
