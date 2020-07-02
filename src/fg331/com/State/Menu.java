@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 public class Menu extends State {
     private final int width = 180, height = 60;
     private final int startX, startY, heightOffset;
-    private final String[] presetNames = {"Easy Preset", "Inter Preset", "Hard Preset", "Insane Preset", "Custom Speed", "HighScore"};
+    private final String[] presetNames = {"Easy Preset", "Inter Preset", "Hard Preset", "Insane Preset", "Omega Preset", "HighScore"};
     Game game;
     private final MouseListener mouseListener = new MouseListener() {
         @Override
@@ -39,10 +39,10 @@ public class Menu extends State {
                 game.difficulty = 3;
                 updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 4 && e.getY() < startY + heightOffset * 4 + height) { //custom speed
-                mouseRemover();
-                game.settings.mouseSetter();
-                setCurrentState(game.settings);
-                game.render();
+                game.speed = 2;
+                game.autoMove = 0;
+                game.difficulty = 4;
+                updater();
             } else if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 5 && e.getY() < startY + heightOffset * 5 + height) { //custom speed
                 mouseRemover();
                 game.highScore.mouseSetter();

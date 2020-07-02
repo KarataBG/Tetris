@@ -11,14 +11,6 @@ import java.util.ArrayList;
 
 public class Settings extends State {
     Game game;
-
-    public Settings(Game game) {
-        this.game = game;
-
-        seButtonX = game.MAP_WIDTH * game.WIDTH / 8;
-        seButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + (height + 20) * 4;
-    }
-
     private int seButtonX, seButtonY;
     private int width = 180, height = 60;
     private int switcher = 0;
@@ -33,19 +25,19 @@ public class Settings extends State {
             return stringBuilder.toString();
         }
     };
-
     private MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getX() > seButtonX && e.getX() < seButtonX + width * 2 && e.getY() > seButtonY && e.getY() < seButtonY + height) {
-                mouseRemover();
-                game.menu.mouseSetter();
-                setCurrentState(game.menu);
-            }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
+            if (e.getX() > seButtonX && e.getX() < seButtonX + width * 2 && e.getY() > seButtonY && e.getY() < seButtonY + height) {
+                mouseRemover();
+                game.menu.mouseSetter();
+                setCurrentState(game.menu);
+                game.render();
+            }
         }
 
         @Override
@@ -60,11 +52,9 @@ public class Settings extends State {
         public void mouseExited(MouseEvent e) {
         }
     };
-
     private KeyListener keyListener = new KeyListener() {
         @Override
-        public void keyTyped(KeyEvent e) {
-        }
+        public void keyTyped(KeyEvent e) { }
 
         @Override
         public void keyPressed(KeyEvent e) {
@@ -87,6 +77,13 @@ public class Settings extends State {
         public void keyReleased(KeyEvent e) {
         }
     };
+
+    public Settings(Game game) {
+        this.game = game;
+
+        seButtonX = game.MAP_WIDTH * game.WIDTH / 8;
+        seButtonY = game.MAP_HEIGHT * game.WIDTH / 12 + (height + 20) * 4;
+    }
 
     public void updater() {
 

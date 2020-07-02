@@ -20,8 +20,10 @@ public class End extends State {
         public void mouseClicked(MouseEvent e) { //TODO може итератор през правоъгълници(клас)
             if (e.getX() > repButtonX && e.getX() < repButtonX + width * 2 && e.getY() > repButtonY && e.getY() < repButtonY + height) {
                 updater(game.gameState);
+                game.render();
             } else if (e.getX() > menButtonX && e.getX() < menButtonX + width * 2 && e.getY() > menButtonY && e.getY() < menButtonY + height) {
                 updater(game.menu);
+                game.render();
             }
         }
 

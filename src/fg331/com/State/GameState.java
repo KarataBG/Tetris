@@ -22,6 +22,7 @@ public class GameState extends State {
                 mouseRemover();
                 game.menu.mouseSetter();
                 setCurrentState(game.menu);
+                game.render();
             }
         }
         @Override
@@ -46,7 +47,6 @@ public class GameState extends State {
     }
     @Override
     public void tick() {
-
         game.autoMove++;
         // TODO wednav natisnato ima 4akane za wreme; press w rotationLeft = 0 ina4e rotationLeft winagi e 6;
 
@@ -77,7 +77,7 @@ public class GameState extends State {
         g.fillRect(game.width * 3 / 4, 0, game.width / 4, game.height);
 
         game.currentBlock.draw(g);
-        game.currentBlock.sideDisplay(g, game.blocks[game.blockReeper + 1], game.pointCounter);
+        game.currentBlock.sideDisplay(g, game.blocks[game.blockReeper],game.blocks[game.blockReeper+1],game.blocks[game.blockReeper+2], game.pointCounter); // имам ненужно увеличаване на blockReaper
 
         for (int i = 0; i < game.MAP_WIDTH; i++) {
             for (int j = 0; j < game.MAP_HEIGHT; j++) {

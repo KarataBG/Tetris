@@ -14,16 +14,21 @@ public class Main {
 
         Game game = new Game("Tetris");
         game.start();
-        //TODO скед загуба да има друг екран(стадии) на който да има неща !>
-        //TODO да има high score за отделните трудности, кур, и стадий за него
-        //TODO да има паузиране
-        //TODO открий какъв е този клас Scores и го оправи
-        //TODO вкарай gridLines
-        //TODO сложи рисуването на втора нишка и викай само при нужда
-        // може би не е нужна друга нишка
-        //TODO да идват от извън игралното поле да има два нови реда които няма да се рисуват
+
+        //TODO оправи да работи с малък размер gridLines и защо дисплейа на парчета бърза
+        //TODO показва с едно напред в sideDisplay следващите блокчета
+
     }
 
+
+    //TODO да идват от извън игралното поле да има два нови реда които няма да се рисуват !
+    //TODO скед загуба да има друг екран(стадии) на който да има неща !>
+    //TODO да има high score за отделните трудности, и стадий за него !
+    //TODO да има паузиране !
+    //TODO открий какъв е този клас Scores и го оправи !
+    //TODO вкарай gridLines !
+    //TODO сложи рисуването на втора нишка и викай само при нужда !
+    // може би не е нужна друга нишка !
     //TODO oprawi wartene nalqwo
     //TODO warteneto warti w obratni posoki
     // danoto e izwan ekrana  dawa gre6ka ako zawarta blok4e taka 4e da bade izwan ekrana
@@ -38,4 +43,7 @@ public class Main {
     //TODO kogato zawartqh dalgoto takmo kogato se spawn-na i mu dadoh dwijenie (w slu4aq na lqwo) dade .ArrayIndexOutOfBoundsException: -1
 
     //TODO W Menu updater() da testartira igrata
+
+    //TODO направи си някаква малка симулациика
+    // simulating evolution of aggresssion
 }

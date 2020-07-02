@@ -1,5 +1,7 @@
 package fg331.com.KeyManager;
 
+import fg331.com.State.State;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -68,7 +70,6 @@ public class KeyManager implements KeyListener, ActionListener {
         }*/
 
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {

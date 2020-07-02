@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
 
-    public final int WIDTH = 48, HEIGHT = 48;
+    public final int WIDTH = 36, HEIGHT = 36;
     public final int heightOffset = 0;
     public final int heightOffsetButtons = 80;
     public int MAP_WIDTH;
@@ -38,7 +38,7 @@ public class Game extends JPanel implements Runnable {
 
     public int pointCounter = 0;
     public int difficulty;
-    public int maxDifficulty = 3;
+    public int maxDifficulty = 4;
 
     public Graphics g;
     public Font drawFont = new Font("Arial", Font.BOLD, 45); // fon za pisaneto na ostawa6ti bombo i pri pe4elene
@@ -60,7 +60,7 @@ public class Game extends JPanel implements Runnable {
 
     Game(String title) {
         this.title = title;
-        MAP_HEIGHT = 15;
+        MAP_HEIGHT = 22;
         MAP_WIDTH = 10;
 
         height = HEIGHT * MAP_HEIGHT;
@@ -92,7 +92,7 @@ public class Game extends JPanel implements Runnable {
         menu.mouseSetter();
         State.setCurrentState(menu);
 
-        for (int i = 0; i < 5/*6*/; i++) {
+        for (int i = 0; i < 6/*6*/; i++) {
             render();
         }
     }
@@ -223,6 +223,7 @@ public class Game extends JPanel implements Runnable {
         gameState.mouseRemover();
         end.mouseSetter();
         State.setCurrentState(end);
+        render();
     }
 
     private void scoreboardCheck() {
@@ -246,7 +247,8 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
-        count = 4 - count;
+        count = maxDifficulty + 1 - count;
+        System.out.println(maxDifficulty + 1 - count);
 
         if (count != 0) { // TODO решението е че само отварянето с стрийма премахва всичко във файла
             StringBuilder stringBuilder = new StringBuilder();
@@ -366,7 +368,7 @@ public class Game extends JPanel implements Runnable {
         int fps = 20;
 
         while (running) {
-            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
+//            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
             tick();
 
             try {
