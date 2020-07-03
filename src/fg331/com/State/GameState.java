@@ -19,7 +19,8 @@ public class GameState extends State {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (e.getX() > meButtonX - game.WIDTH / 2 * 1.45 && e.getX() < meButtonX + game.WIDTH * 3 * 1.15 && e.getY() > meButtonY - game.HEIGHT * 1.45 && e.getY() < meButtonY * 1.15) {
+//            if (e.getX() > meButtonX - game.WIDTH / 2 * 1.45 && e.getX() < meButtonX + game.WIDTH * 3 * 1.15 && e.getY() > meButtonY - game.HEIGHT * 1.45 && e.getY() < meButtonY * 1.15) {
+            if (e.getX() > meButtonX - game.WIDTH / 2 * 1.45 && e.getX() < game.width/4 && e.getY() > 0 && e.getY() < meButtonY * 1.15) {
                 mouseRemover();
                 game.menu.mouseSetter();
                 setCurrentState(game.menu);
