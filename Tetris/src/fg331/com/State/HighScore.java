@@ -10,35 +10,33 @@ public class HighScore extends State {
 
     private final int width = 180;
     private final int height = 60;
-    private final String[] difficultyNames = {"Easy", "Inter", "Hard", "Insane", "Back"};
+    private final String[] difficultyNames = {"Easy", "Inter", "Hard", "Insane","Omega", "Back"};
 
     Game game;
     int startX, startY, heightOffset;
     private final MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * 4 && e.getY() < startY + heightOffset * 4 + height) { //custom speed
-                mouseRemover();
-                game.menu.mouseSetter();
-                setCurrentState(game.menu);
-            }
+
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
-
+            System.out.println(difficultyNames.length);
+            if (e.getX() > startX && e.getX() < startX + width * 2 && e.getY() > startY + heightOffset * (difficultyNames.length-1) && e.getY() < startY + heightOffset * (difficultyNames.length-1) + height) { //custom speed
+                mouseRemover();
+                game.menu.mouseSetter();
+                setCurrentState(game.menu);
+                game.render();
+            }
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
 
         }
-
         @Override
         public void mouseEntered(MouseEvent e) {
-
         }
-
         @Override
         public void mouseExited(MouseEvent e) {
 

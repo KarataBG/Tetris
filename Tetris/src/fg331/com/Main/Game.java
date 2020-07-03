@@ -14,37 +14,34 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
 
-    public final int WIDTH = 48, HEIGHT = 48;
+    public final int WIDTH = 36, HEIGHT = 36;
     public final int heightOffset = 0;
     public final int heightOffsetButtons = 80;
+    public final int topOffset;
     public int MAP_WIDTH;
     public int MAP_HEIGHT;
     public Display display;
     public KeyManager keyManager;
     public Thread thread;
-
     public Menu menu;
     public Scores score;
     public GameState gameState;
     public Settings settings;
     public End end;
     public HighScore highScore;
-
     public int[][] map;
     public ArrayList<Integer> scores = new ArrayList<>();
-
     public Block currentBlock;
     public int leftOffset;
-
     public int pointCounter = 0;
     public int difficulty;
-    public int maxDifficulty = 3;
-
+    public int maxDifficulty = 4;
     public Graphics g;
+    public BufferStrategy bs;
     public Font drawFont = new Font("Arial", Font.BOLD, 45); // fon za pisaneto na ostawa6ti bombo i pri pe4elene
+    public Font drawFontHelvetica = new Font("Helvetica", Font.BOLD | Font.ITALIC, 60); // fon za pisaneto na ostawa6ti bombo i pri pe4elene
     public boolean running = false;
     public boolean clearSpawn = true;
-
     public String highScoreGameState;
     public String title;
     public int width, height;
@@ -55,18 +52,19 @@ public class Game extends JPanel implements Runnable {
             3, 1, 5, 2, 6, 1, 3, 7, 6, 5, 1, 3, 6, 5, 2, 7, 1, 6, 3, 5, 1, 6, 2, 5, 3, 7, 6, 5, 1, 2, 3, 4, 5, 6, 3, 4, 1, 5, 2, 4, 7, 1, 2,
             5, 4, 1, 2, 3, 7, 1, 2, 4, 7, 1, 5, 3, 4, 6, 7, 2, 5, 1, 7, 2, 3, 4, 5, 1, 3, 6, 4, 5, 2, 7, 4, 5, 2, 6, 3, 7, 4, 2, 3, 1, 5, 6,
             3, 2, 7, 5, 3, 6, 2, 7, 4, 6, 3, 2, 1, 5, 7, 4, 3, 1, 2, 6, 4, 3, 2, 7, 4, 6, 2, 7, 5, 3, 1, 6, 4, 2, 7, 1, 4, 6, 7, 2, 4, 3, 6,
-            1, 4, 3, 2, 7, 5, 6, 3, 4, 5, 1, 7, 3, 5, 6, 7, 2, 3, 1, 6, 7, 4, 3, 2, 6, 7, 3, 4, 1, 7, 5, 2, 6,
+            1, 4, 3, 2, 7, 5, 6, 3, 4, 5, 1, 7, 3, 5, 6, 7, 2, 3, 1, 6, 7, 4, 3, 2, 6, 7, 3, 4, 1, 7, 5, 2, 6, 1
     };
 
     Game(String title) {
         this.title = title;
-        MAP_HEIGHT = 15;
+        MAP_HEIGHT = 20;
         MAP_WIDTH = 10;
 
-        height = HEIGHT * MAP_HEIGHT;
+        height = HEIGHT * (MAP_HEIGHT + 3);
         width = MAP_WIDTH * WIDTH * 2;
 
         leftOffset = width / 4;
+        topOffset = HEIGHT * 3;
 
         map = new int[MAP_WIDTH][MAP_HEIGHT];
         keyManager = new KeyManager();
@@ -78,7 +76,6 @@ public class Game extends JPanel implements Runnable {
         Assets.init();
         display = new Display(title, width, height);
         display.getFrame().addKeyListener(keyManager);
-//        initSpawn();
 
         gameState = new GameState(this);
         menu = new Menu(this);
@@ -91,10 +88,14 @@ public class Game extends JPanel implements Runnable {
 
         menu.mouseSetter();
         State.setCurrentState(menu);
+
+        for (int i = 0; i < 6; i++) {
+            render();
+        }
     }
 
-    private void render() {
-        BufferStrategy bs = display.getCanvas().getBufferStrategy();
+    public void render() {
+        bs = display.getCanvas().getBufferStrategy();
         if (bs == null) {
             display.getCanvas().createBufferStrategy(3);
             return;
@@ -113,36 +114,69 @@ public class Game extends JPanel implements Runnable {
         g.dispose();
     }
 
+    public void renderPause() {
+        bs = display.getCanvas().getBufferStrategy();
+        if (bs == null) {
+            display.getCanvas().createBufferStrategy(3);
+            return;
+        }
+        g = bs.getDrawGraphics();
+
+        //clear
+        g.clearRect(0, 0, width, height);
+        //end clear
+
+        //draw
+        if (State.getCurrentState() != null)
+            State.getCurrentState().render(g);
+
+        if (keyManager.space) {
+            String text = "PAUSED";
+            g.setFont(drawFont);
+            int width = getFontMetrics(drawFont).stringWidth(text);
+            int height = getFontMetrics(drawFont).getHeight();
+            g.drawString(text, this.width / 2 - width / 2, this.height / 2 - height / 2);
+        }
+
+        //ENDING
+        bs.show();
+        g.dispose();
+
+    }
+
     private void tick() {
+//        System.out.println(State.getCurrentState() != null);
+//        System.out.println(!keyManager.space);
+//        System.out.println();
         if (State.getCurrentState() != null && !keyManager.space) {
             State.getCurrentState().tick();
-        }
+        } else renderPause();
     }
 
     private void spawnChecker() {
-        switch (blocks[blockReeper]) {
-            case 1:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[6][1] != 0) exiter();
-                break;
-            case 2:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[5][1] != 0) exiter();
-                break;
-            case 3:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[4][1] != 0) exiter();
-                break;
-            case 4:
-                if (map[4][1] != 0 || map[5][1] != 0 || map[5][0] != 0 || map[6][0] != 0) exiter();
-                break;
-            case 5:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[7][0] != 0) exiter();
-                break;
-            case 6:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[4][1] != 0 || map[5][1] != 0) exiter();
-                break;
-            case 7:
-                if (map[4][0] != 0 || map[5][0] != 0 || map[5][1] != 0 || map[6][1] != 0) exiter();
-                break;
-        } // TODO мръсно
+//        switch (blocks[blockReeper]) {
+//            case 1:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[6][1] != 0) exiter();
+//                break;
+//            case 2:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[5][1] != 0) exiter();
+//                break;
+//            case 3:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[4][1] != 0) exiter();
+//                break;
+//            case 4:
+//                if (map[4][1] != 0 || map[5][1] != 0 || map[5][0] != 0 || map[6][0] != 0) exiter();
+//                break;
+//            case 5:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[6][0] != 0 || map[7][0] != 0) exiter();
+//                break;
+//            case 6:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[4][1] != 0 || map[5][1] != 0) exiter();
+//                break;
+//            case 7:
+//                if (map[4][0] != 0 || map[5][0] != 0 || map[5][1] != 0 || map[6][1] != 0) exiter();
+//                break;
+//        } // TODO мръсно
     }
 
     public void exiter() {
@@ -219,6 +253,7 @@ public class Game extends JPanel implements Runnable {
         gameState.mouseRemover();
         end.mouseSetter();
         State.setCurrentState(end);
+        render();
     }
 
     private void scoreboardCheck() {
@@ -242,7 +277,8 @@ public class Game extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
-        count = 4 - count;
+        count = maxDifficulty + 1 - count;
+        System.out.println(maxDifficulty + 1 - count);
 
         if (count != 0) { // TODO решението е че само отварянето с стрийма премахва всичко във файла
             StringBuilder stringBuilder = new StringBuilder();
@@ -325,7 +361,8 @@ public class Game extends JPanel implements Runnable {
         for (int i = 0; i < 4; i++) {
             if (currentBlock.getX(i) < 0 || currentBlock.getX(i) > MAP_WIDTH || currentBlock.getY(i) < 0 || currentBlock.getY(i) > MAP_HEIGHT)
                 exiter();
-            map[currentBlock.getX(i)][currentBlock.getY(i)] = currentBlock.getShape();
+            else
+                map[currentBlock.getX(i)][currentBlock.getY(i)] = currentBlock.getShape();
         }
         currentBlock.points();
 
@@ -360,10 +397,9 @@ public class Game extends JPanel implements Runnable {
     public void run() {
         init();
         int fps = 20;
-        int d = 0;
 
         while (running) {
-            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
+//            render(); //TODO ако искаш оптимизирай да се рисува на друга нишка само когато се промени нещо
             tick();
 
             try {
