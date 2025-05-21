@@ -12,6 +12,7 @@ import java.awt.image.BufferStrategy;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Game extends JPanel implements Runnable {
 
@@ -268,7 +269,7 @@ public class Game extends JPanel implements Runnable {
                 file.createNewFile();
                 reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+
             }
         }
 
@@ -280,38 +281,39 @@ public class Game extends JPanel implements Runnable {
             while ((line = reader.readLine()) != null) {
                 count++;
                 String[] l = line.split(" ");
-//                System.out.println(count + " count - l[0] " + Integer.parseInt(l[0]));
-                if (count < Integer.parseInt(l[0])){
-                    int limit =  Integer.parseInt(l[0]) - count;
+                if (count < Integer.parseInt(l[0])) { // prowerqwa dali zapisa ne e primerno na indeks 3 i ako e zapalwa redowete s 0
+                    int limit = Integer.parseInt(l[0]) - count;
                     for (int i = 0; i < limit; i++) {
                         builder.append(count).append(" ").append(0).append("\n");
-//                        System.out.println("builder \n" + builder.toString());
+                        scores.add(0);
                         count++;
                     }
-//                    System.out.println("AAAAAAAAAA");
+                    //weche e zapalnilo dupkite i dobawq reda na prawilnoto mqsto
                     builder.append(line).append("\n");
-                }else builder.append(line);
+                    scores.add(Integer.parseInt(l[1]));
+
+                } else {
+                    builder.append(line).append("\n");
+                    scores.add(Integer.parseInt(l[1]));
+                }
             }
-            System.out.println("MAX" + maxDifficulty + " " + count);
             int limit = maxDifficulty - count;
-            for (int i = 0; i < limit; i++) {
+            for (int i = 0; i < limit; i++) { // ako se poluchi da ima dupki do kraq na faila ste badat zapalneni tuk
                 count++;
                 builder.append(count).append(" ").append(0).append("\n");
-//                System.out.println("AAAAAAAAAbuilder \n" + builder.toString());
+                scores.add(0);
             }
-            System.out.println(builder);
             reader.close();
 
         } catch (NullPointerException | IOException e) {
             e.printStackTrace();
         }
 
-        count = maxDifficulty - count;
-        System.out.println(maxDifficulty - count);
+//        count = maxDifficulty - count;
 
 //        if (count != 0) {
 //            StringBuilder stringBuilder = new StringBuilder();
-            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt", false))) {
+        try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt", false))) {
 ////            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
 //                for (int i = 0; i < count; i++) {
 //                    System.out.println(i);
@@ -323,28 +325,16 @@ public class Game extends JPanel implements Runnable {
 //                if (count != 4)
 //                    out.println();
 //                out.print(stringBuilder.toString());
-                out.print(builder.toString());
+            out.print(builder.toString());
 //
-                out.flush();
-                out.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 //        }
 
-        try {
-            // взимане на резултата //
-            reader.close();
-
-            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
-            //            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
-            String line1;
-            while ((line1 = reader.readLine()) != null) {
-                scores.add(Integer.parseInt(line1.split(" ")[0]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        scores = Arrays.stream(builder.toString().split("\n")).map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void loadHighScore() { //TODO да хване трудност параметъра трябва
