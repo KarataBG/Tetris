@@ -119,7 +119,7 @@ public class Block {
                 point.y++;
             }
         } else {
-            for (Point p : current){
+            for (Point p : current) {
                 if (p.y <= 0)
                     game.exiter();
             }
@@ -272,38 +272,33 @@ public class Block {
     }
 
     void points() {
-        int lineCounter = 0;
+//        int lineCounter = 0;
         int basePoint = 2000;
         int pointStacker = 0;
-        int lineHolder = 0;
+//        int lineHolder = 0;
 
         for (int j = game.MAP_HEIGHT - 1; j > 0; j--) {
+            boolean isCompleteLine = true;
             for (int i = 0; i < game.MAP_WIDTH; i++) {
-                if (game.map[i][j] != 0) {
-                    lineCounter++;
+                if (game.map[i][j] == 0) {
+                    isCompleteLine = false;
+                    break;
                 }
             }
-            if (lineCounter == game.MAP_WIDTH) {
+
+            if (isCompleteLine) {
                 pointStacker++;
-                if (pointStacker == 1) {
-                    lineHolder = j;
+                for (int m = j; m > 0; m--) {
+                    for (int i = 0; i < game.MAP_WIDTH; i++) {
+                        game.map[i][m] = game.map[i][m - 1]; // Shift down
+                    }
                 }
-            }
-
-            lineCounter = 0;
-        }
-
-        for (int m = lineHolder; m > pointStacker; m--) {
-            for (int i = 0; i < game.MAP_WIDTH; i++) {
-                game.map[i][m] = game.map[i][m - pointStacker];
+                j++;
             }
         }
 
-        if (pointStacker == 4) {
-            game.pointCounter += basePoint * (pointStacker + 2);
-        } else {
-            game.pointCounter += basePoint * pointStacker;
-        }
+        game.pointCounter += basePoint * (pointStacker == 4 ? (pointStacker + 2) : pointStacker);
+
     }
 
     public void sideDisplay(Graphics g, int rand, int rand1, int rand2, int pointCounter) { //TODO да се вика само при ъпдейт
