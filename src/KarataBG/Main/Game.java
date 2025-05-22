@@ -337,45 +337,45 @@ public class Game extends JPanel implements Runnable {
 //        scores = Arrays.stream(builder.toString().split("\n")).map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void loadHighScore() { //TODO да хване трудност параметъра трябва
-        BufferedReader reader = null;
-        try {
-//            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
-            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String line = null;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        try {
-            if ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//        if (stringBuilder.toString().equals("")) {
-////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
-//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-//                out.print(String.valueOf(pointCounter));
-//                out.close();
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
+//    public void loadHighScore() { //TODO да хване трудност параметъра трябва
+//        BufferedReader reader = null;
+//        try {
+////            reader = new BufferedReader(new FileReader("res/txt/HighScores.txt"));
+//            reader = new BufferedReader(new FileReader(Assets.path + "\\HighScores.txt"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
 //        }
-
-//        if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
-////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
-//            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
-//                out.print(String.valueOf(pointCounter));
-//                out.close();
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
+//        String line = null;
+//        StringBuilder stringBuilder = new StringBuilder();
+//
+//        try {
+//            if ((line = reader.readLine()) != null) {
+//                stringBuilder.append(line);
 //            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
-    }
+//
+////        if (stringBuilder.toString().equals("")) {
+//////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+////            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+////                out.print(String.valueOf(pointCounter));
+////                out.close();
+////            } catch (FileNotFoundException e) {
+////                e.printStackTrace();
+////            }
+////        }
+//
+////        if (pointCounter > Integer.parseInt(stringBuilder.toString())) {
+//////            try (PrintStream out = new PrintStream(new FileOutputStream("res/txt/HighScores.txt"))) {
+////            try (PrintStream out = new PrintStream(new FileOutputStream(Assets.path + "\\HighScores.txt"))) {
+////                out.print(String.valueOf(pointCounter));
+////                out.close();
+////            } catch (FileNotFoundException e) {
+////                e.printStackTrace();
+////            }
+////        }
+//    }
 
     void switching() {
         for (int i = 0; i < 4; i++) {

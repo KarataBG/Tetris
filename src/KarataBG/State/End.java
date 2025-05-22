@@ -66,7 +66,7 @@ public class End extends State {
         game.map = new int[game.MAP_WIDTH][game.MAP_HEIGHT];
 //        game.initSpawn();
         game.pointCounter = 0;
-        game.loadHighScore();
+//        game.loadHighScore();
 
         mouseRemover();
         state.mouseSetter();
